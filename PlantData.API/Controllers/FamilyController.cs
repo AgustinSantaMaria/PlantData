@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using PlantData.API.Data;
 using PlantData.API.Models.Domian;
@@ -29,7 +30,12 @@ namespace PlantData.API.Controllers
         [Route("{id:Guid}")]
         public IActionResult GetById([FromRoute] Guid id)
         {
-
+            var family = plantDataDbContext.Families.Find(id);
+            if(family is null)
+            {
+                return NotFound();
+            }
+            return Ok(family);
         }
     }
 }
