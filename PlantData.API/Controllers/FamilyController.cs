@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using PlantData.API.Data;
 using PlantData.API.Models.Domian;
+using PlantData.API.Models.DTO;
 
 namespace PlantData.API.Controllers
 {
@@ -22,9 +23,27 @@ namespace PlantData.API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var families = plantDataDbContext.Families.ToList();
-            return Ok(families);
+            // Get Data from DB (Domain models)
+            var familiesDomain = plantDataDbContext.Families.ToList();
+
+            // Map Domain Models to Dto
+            var familiesDto = new List<FamilyDto>();
+            foreach (var family in familiesDomain)
+            {
+                familiesDto.Add(new FamilyDto
+                {
+                    Id = family.Id,
+                    Name = family.Name,
+                    Genus = family.Genus,
+                });
+
+            }
+
+            // Return DTOs
+            return Ok(familiesDto);
         }
+
+
 
         [HttpGet]
         [Route("{id:Guid}")]

@@ -3,8 +3,8 @@
     public class Difficulty
     {
         public Guid Id { get; set; }
-        public String Name { get; set; }
-        public String Watering { get; set; }
+        public string Name { get; set; }
+        public string Watering { get; set; }
 
     }
 }
