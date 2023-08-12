@@ -39,7 +39,7 @@ namespace PlantData.API.Controllers
 
             }
 
-            // Return DTOs
+            // Return DTOs to client
             return Ok(familiesDto);
         }
 
@@ -49,12 +49,24 @@ namespace PlantData.API.Controllers
         [Route("{id:Guid}")]
         public IActionResult GetById([FromRoute] Guid id)
         {
-            var family = plantDataDbContext.Families.Find(id);
-            if(family is null)
+            // Get Family by ID
+            var familyDomain = plantDataDbContext.Families.Find(id);
+
+            if(familyDomain is null)
             {
                 return NotFound();
             }
-            return Ok(family);
+
+            // Map Domain model to DTO
+            var familyDto = new FamilyDto
+            {
+                Id = familyDomain.Id,
+                Name = familyDomain.Name,
+                Genus = familyDomain.Genus
+            };
+
+            // Return DTO to client
+            return Ok(familyDto);
         }
     }
 }
