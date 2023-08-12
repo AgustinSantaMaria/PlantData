@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using PlantData.API.Data;
@@ -67,6 +68,23 @@ namespace PlantData.API.Controllers
 
             // Return DTO to client
             return Ok(familyDto);
+        }
+
+
+        [HttpPost]
+        public IActionResult Create([FromBody] AddRegionRequestDto addRegionRequestDto)
+        {
+            // Map Dto request to Domain Model
+            var familyDomain = new Family
+            {
+                Name = addRegionRequestDto.Name,
+                Genus = addRegionRequestDto.Genus
+            };
+
+            // Create table with domain model
+            plantDataDbContext.Families.Add(familyDomain);
+            plantDataDbContext.SaveChanges();
+
         }
     }
 }
