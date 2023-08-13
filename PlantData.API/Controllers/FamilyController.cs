@@ -85,6 +85,8 @@ namespace PlantData.API.Controllers
             plantDataDbContext.Families.Add(familyDomain);
             plantDataDbContext.SaveChanges();
 
+
+            return CreatedAtAction(nameof(GetById), new { Id = familyDomain.Id }, familyDomain );
         }
     }
 }
