@@ -85,8 +85,43 @@ namespace PlantData.API.Controllers
             plantDataDbContext.Families.Add(familyDomain);
             plantDataDbContext.SaveChanges();
 
+            // Map domain model back to Dto
+            var familyDto = new FamilyDto
+            {
+                Id = familyDomain.Id,
+                Name = familyDomain.Name,
+                Genus = familyDomain.Genus
+            };
 
-            return CreatedAtAction(nameof(GetById), new { Id = familyDomain.Id }, familyDomain );
+            return CreatedAtAction(nameof(GetById), new { Id = familyDto.Id }, familyDto);
+        }
+
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public IActionResult Update([FromRoute] Guid id,[FromBody]  UpdateFamilyRequestDto updateFamillyRequestDto)
+        {
+            // Verificamos si el ID existe
+            var familyDomain = plantDataDbContext.Families.FirstOrDefault(x =>  x.Id == id);
+
+            if (familyDomain is null)
+            {
+                return NotFound();
+            }
+            // Mapeamos Dto a Domain
+            familyDomain.Name = updateFamillyRequestDto.Name;
+            familyDomain.Genus = updateFamillyRequestDto.Genus;
+
+            // Guardamos cambios en la DB
+            plantDataDbContext.SaveChanges();
+
+            // Mapeamos Domain a Dto para devolverlo al cliente
+            var familyDto = new FamilyDto
+            {
+                Id = familyDomain.Id,
+                Name = familyDomain.Name,
+                Genus = familyDomain.Genus
+            };
+            return Ok(familyDto);
         }
     }
 }
