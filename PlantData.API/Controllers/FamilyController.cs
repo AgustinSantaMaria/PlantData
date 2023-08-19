@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
@@ -43,7 +44,6 @@ namespace PlantData.API.Controllers
             // Return DTOs to client
             return Ok(familiesDto);
         }
-
 
 
         [HttpGet]
@@ -120,6 +120,31 @@ namespace PlantData.API.Controllers
                 Id = familyDomain.Id,
                 Name = familyDomain.Name,
                 Genus = familyDomain.Genus
+            };
+            return Ok(familyDto);
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public IActionResult Delete([FromRoute] Guid id)
+        {   
+            // Verificamos si existe
+            var FamilyDomain = plantDataDbContext.Families.FirstOrDefault(x => x.Id == id);
+            if (FamilyDomain is null)
+            {
+                return NotFound();
+            }
+
+            // Eliminamos Family
+            plantDataDbContext.Remove(FamilyDomain);
+            plantDataDbContext.SaveChanges();
+
+            // Mapeamos Domain a Dto para return 
+            var familyDto = new FamilyDto
+            {
+                Id = FamilyDomain.Id,
+                Name = FamilyDomain.Name,
+                Genus = FamilyDomain.Genus
             };
             return Ok(familyDto);
         }
